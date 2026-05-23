@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: meetly_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./laravel:/var/www/html
+    depends_on:
+      - laravel
+      - fastapi
+
+  laravel:
+    build:
+      context: ./laravel
+      dockerfile: Dockerfile
+    container_name: meetly_laravel
+    volumes:
+      - ./laravel:/var/www/html
+    depends_on:
+      - mysql
+      - redis
+
+  fastapi:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    container_name: meetly_fastapi
+    volumes:
+      - ./fastapi:/app
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: mysql:8
+    container_name: meetly_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meetly
+      MYSQL_USER: meetly
+      MYSQL_PASSWORD: meetly
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    container_name: meetly_redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
