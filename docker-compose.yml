@@ -1,11 +1,10 @@
-version: "3.9"
-
 services:
   nginx:
     image: nginx:latest
     container_name: meetly_nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./laravel:/var/www/html
@@ -40,10 +39,10 @@ services:
     container_name: meetly_mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: meetly
-      MYSQL_USER: meetly
-      MYSQL_PASSWORD: meetly
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
