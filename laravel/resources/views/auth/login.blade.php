@@ -43,5 +43,13 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+
+        <!-- GitHub OAuth -->
+        <div class="mt-4 text-center">
+            <a href="{{ route('github.redirect') }}"
+            class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">
+                Войти через GitHub
+            </a>
+        </div>
     </form>
 </x-guest-layout>
