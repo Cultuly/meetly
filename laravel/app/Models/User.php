@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function workspaces()
     {
-        return $this->belongsToMany(Workspace::class);
+        return $this->belongsToMany(Workspace::class, 'workspace_user');
     }
 
     public function messages()
