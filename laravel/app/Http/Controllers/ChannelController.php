@@ -8,6 +8,17 @@ use Illuminate\Http\Request;
 
 class ChannelController extends Controller
 {
+    public function show(Channel $channel)
+    {
+        $this->authorize('view', $channel->workspace);
+
+        $channel->load(['messages' => function ($query) {
+            $query->orderBy('created_at')->with('user');
+        }]);
+
+        return view('channels.show', compact('channel'));
+    }
+
     public function store(Request $request, Workspace $workspace)
     {
         $this->authorize('update', $workspace);

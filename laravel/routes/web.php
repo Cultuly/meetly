@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GithubController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\ChannelController;
+use App\Http\Controllers\MessageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,13 +23,27 @@ Route::middleware('auth')->group(function () {
 
     // === Workspaces ===
     Route::resource('workspaces', WorkspaceController::class);
+
+    Route::post('workspaces/{workspace}/join', [WorkspaceController::class, 'join'])
+    ->name('workspaces.join');
     
     // === Channels ===
+    Route::get('channels/{channel}', [ChannelController::class, 'show'])
+        ->name('channels.show');
+
     Route::post('workspaces/{workspace}/channels', [ChannelController::class, 'store'])
         ->name('channels.store');
 
     Route::delete('channels/{channel}', [ChannelController::class, 'destroy'])
         ->name('channels.destroy');
+    
+    // === Messages ===
+    Route::post('channels/{channel}/messages', [MessageController::class, 'store'])
+        ->name('messages.store');
+
+    Route::delete('messages/{message}', [MessageController::class, 'destroy'])
+        ->name('messages.destroy');
+        
 });
 
 require __DIR__.'/auth.php';

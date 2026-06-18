@@ -30,7 +30,9 @@
         <ul class="space-y-1 mb-4">
             @forelse ($workspace->channels as $channel)
                 <li class="px-3 py-2 rounded-lg bg-gray-700 flex items-center justify-between">
-                    <span><span class="text-gray-400">#</span> {{ $channel->name }}</span>
+                    <a href="{{ route('channels.show', $channel) }}" class="hover:underline">
+                        <span class="text-gray-400">#</span> {{ $channel->name }}
+                    </a>
 
                     @can('update', $workspace)
                         <form method="POST" action="{{ route('channels.destroy', $channel) }}"
