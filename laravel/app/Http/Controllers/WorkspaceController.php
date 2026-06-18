@@ -8,13 +8,23 @@ use Illuminate\Support\Facades\Auth;
 
 class WorkspaceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $workspaces = Auth::user()->workspaces
-            ->merge(Auth::user()->ownedWorkspaces)
-            ->unique('id');
+        $query = trim((string) $request->input('q', ''));
 
-        return view('workspaces.index', compact('workspaces'));
+        $results = $query === ''
+            ? collect()
+            : Workspace::where('visibility', 'public')
+                ->where('name', 'like', '%'.$query.'%')
+                ->orderBy('name')
+                ->limit(20)
+                ->get();
+
+        $myIds = Auth::user()->ownedWorkspaces()->pluck('workspaces.id')
+            ->merge(Auth::user()->workspaces()->pluck('workspaces.id'))
+            ->unique();
+
+        return view('workspaces.index', compact('query', 'results', 'myIds'));
     }
 
     public function create()
@@ -76,5 +86,14 @@ class WorkspaceController extends Controller
         $workspace->delete();
 
         return redirect()->route('workspaces.index');
+    }
+
+    public function join(Workspace $workspace)
+    {
+        abort_unless($workspace->visibility === 'public', 403);
+
+        $workspace->members()->syncWithoutDetaching([Auth::id()]);
+
+        return redirect()->route('workspaces.show', $workspace);
     }
 }

@@ -14,6 +14,10 @@ class WorkspacePolicy
 
     public function view(User $user, Workspace $workspace): bool
     {
+        if ($workspace->visibility === 'public') {
+            return true;
+        }
+
         return $user->id === $workspace->owner_id
             || $workspace->members()->where('user_id', $user->id)->exists();
     }
