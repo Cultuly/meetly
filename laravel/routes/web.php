@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\GithubController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ReactionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,7 +44,10 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('messages/{message}', [MessageController::class, 'destroy'])
         ->name('messages.destroy');
-        
+    
+    // === Reactions ===
+    Route::post('messages/{message}/reactions', [ReactionController::class, 'toggle'])
+    ->name('reactions.toggle');
 });
 
 require __DIR__.'/auth.php';
