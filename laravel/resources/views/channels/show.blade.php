@@ -26,11 +26,43 @@
                                       class="opacity-0 group-hover:opacity-100 transition">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="text-sm text-white-800 hover:text-red-400">удалить</button>
+                                    <button class="text-sm text-white hover:text-red-400">удалить</button>
                                 </form>
                             @endif
                         </div>
                         <p class="text-gray-200 break-words">{{ $message->body }}</p>
+                        @php
+                            $reactionMap = [
+                                'like'  => '👍',
+                                'love'  => '❤️',
+                                'laugh' => '😂',
+                                'party' => '🎉',
+                            ];
+
+                            $grouped = $message->reactions->groupBy('emoji');
+                        @endphp
+
+                        <div class="flex gap-1 mt-1">
+                            @foreach ($reactionMap as $key => $emoji)
+                                @php
+                                    $group   = $grouped->get($key);
+                                    $count   = $group?->count() ?? 0;
+                                    $reacted = $group?->contains('user_id', auth()->id()) ?? false;
+                                @endphp
+
+                                <form method="POST" action="{{ route('reactions.toggle', $message) }}">
+                                    @csrf
+                                    <input type="hidden" name="emoji" value="{{ $key }}">
+                                    <button @class([
+                                        'px-2 py-0.5 rounded-full text-sm border transition',
+                                        'bg-indigo-600/30 border-indigo-500' => $reacted,
+                                        'bg-gray-700/40 border-transparent hover:bg-gray-700' => ! $reacted,
+                                    ])>
+                                        {{ $emoji }}@if ($count > 0)<span class="text-xs text-gray-300 ml-1">{{ $count }}</span>@endif
+                                    </button>
+                                </form>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             @empty

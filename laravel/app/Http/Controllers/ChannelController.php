@@ -13,7 +13,7 @@ class ChannelController extends Controller
         $this->authorize('view', $channel->workspace);
 
         $channel->load(['messages' => function ($query) {
-            $query->orderBy('created_at')->with('user');
+            $query->orderBy('created_at')->with('user', 'reactions');
         }]);
 
         return view('channels.show', compact('channel'));
