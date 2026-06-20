@@ -42,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::post('channels/{channel}/messages', [MessageController::class, 'store'])
         ->name('messages.store');
 
+    Route::put('messages/{message}', [MessageController::class, 'update'])
+        ->name('messages.update');
+
     Route::delete('messages/{message}', [MessageController::class, 'destroy'])
         ->name('messages.destroy');
     
