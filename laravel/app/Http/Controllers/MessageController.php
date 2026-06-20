@@ -25,6 +25,22 @@ class MessageController extends Controller
         return redirect()->route('channels.show', $channel);
     }
 
+    public function update(Request $request, Message $message)
+    {
+        abort_unless($message->user_id === Auth::id(), 403);
+
+        $data = $request->validate([
+            'body' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $message->update([
+            'body'      => $data['body'],
+            'edited_at' => now(), 
+        ]);
+
+        return redirect()->route('channels.show', $message->channel);
+    }
+
     public function destroy(Message $message)
     {
         $isAuthor = $message->user_id === Auth::id();

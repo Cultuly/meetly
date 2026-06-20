@@ -8,6 +8,10 @@ class Message extends Model
 {
     protected $fillable = ['channel_id', 'user_id', 'body'];
 
+    protected $casts = [
+        'edited_at' => 'datetime',
+    ];
+
     public function channel()
     {
         return $this->belongsTo(Channel::class);

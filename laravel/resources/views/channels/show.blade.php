@@ -15,10 +15,22 @@
                         {{ mb_strtoupper(mb_substr($message->user?->name ?? '?', 0, 1)) }}
                     </div>
 
-                    <div class="min-w-0">
+                    <div class="min-w-0" x-data="{ editing: false }">
                         <div class="flex items-baseline gap-2">
                             <span class="text-sm font-medium">{{ $message->user?->name ?? 'Удалённый пользователь' }}</span>
                             <span class="text-xs text-gray-500">{{ $message->created_at->format('H:i') }}</span>
+
+                            @if ($message->edited_at)
+                                <span class="text-xs text-gray-500">(изменено)</span>
+                            @endif
+
+                            @if ($message->user_id === auth()->id())
+                                <button @click="editing = true"
+                                        x-show="!editing"
+                                        class="opacity-0 group-hover:opacity-100 transition text-sm text-white hover:text-indigo-400">
+                                    редактировать
+                                </button>
+                            @endif
 
                             {{-- Кнопка удаления (автор/владелец) --}}
                             @if ($message->user_id === auth()->id() || auth()->user()->can('update', $channel->workspace))
@@ -30,7 +42,20 @@
                                 </form>
                             @endif
                         </div>
-                        <p class="text-gray-200 break-words">{{ $message->body }}</p>
+
+                        <p x-show="!editing" class="text-gray-200 break-words">{{ $message->body }}</p>
+
+                        {{-- Форма редактирования --}}
+                        <form x-show="editing" x-cloak method="POST" action="{{ route('messages.update', $message) }}"
+                              class="flex gap-2 mt-1">
+                            @csrf
+                            @method('PUT')
+                            <input type="text" name="body" value="{{ $message->body }}"
+                                   class="flex-1 rounded-lg bg-gray-700 border-gray-600 text-gray-100 text-sm">
+                            <button class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm">Сохранить</button>
+                            <button type="button" @click="editing = false"
+                                    class="px-3 py-1 rounded-lg bg-gray-600 hover:bg-gray-500 text-sm">Отмена</button>
+                        </form>
                         @php
                             $reactionMap = [
                                 'like'  => '👍',
