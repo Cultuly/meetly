@@ -6,6 +6,7 @@ use App\Models\Channel;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
 class MessageController extends Controller
 {
@@ -17,10 +18,25 @@ class MessageController extends Controller
             'body' => ['required', 'string', 'max:2000'],
         ]);
 
-        $channel->messages()->create([
+        $message = $channel->messages()->create([
             'user_id' => Auth::id(),
             'body'    => $data['body'],
         ]);
+        $message->load('user');
+
+        Redis::publish("channel.{$channel->id}", json_encode([
+            'type'       => 'message.created',
+            'channel_id' => $channel->id,
+            'message'    => [
+                'id'         => $message->id,
+                'body'       => $message->body,
+                'user'       => [
+                    'id'   => $message->user->id,
+                    'name' => $message->user->name,
+                ],
+                'created_at' => $message->created_at->toIso8601String(),
+            ],
+        ]));
 
         return redirect()->route('channels.show', $channel);
     }
@@ -33,10 +49,19 @@ class MessageController extends Controller
             'body' => ['required', 'string', 'max:2000'],
         ]);
 
-        $message->update([
-            'body'      => $data['body'],
-            'edited_at' => now(), 
-        ]);
+        $message->body      = $data['body'];
+        $message->edited_at = now();
+        $message->save();
+
+        Redis::publish("channel.{$message->channel_id}", json_encode([
+            'type'       => 'message.updated',
+            'channel_id' => $message->channel_id,
+            'message'    => [
+                'id'        => $message->id,
+                'body'      => $message->body,
+                'edited_at' => $message->edited_at->toIso8601String(),
+            ],
+        ]));
 
         return redirect()->route('channels.show', $message->channel);
     }
@@ -50,7 +75,16 @@ class MessageController extends Controller
 
         $channel = $message->channel;
 
+        $messageId = $message->id;
+        $channelId = $message->channel_id;
+
         $message->delete();
+
+        Redis::publish("channel.{$channelId}", json_encode([
+            'type'       => 'message.deleted',
+            'channel_id' => $channelId,
+            'message_id' => $messageId,
+        ]));
 
         return redirect()->route('channels.show', $channel);
     }
