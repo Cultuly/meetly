@@ -30,6 +30,12 @@ services:
     container_name: meetly_fastapi
     volumes:
       - ./fastapi:/app
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      DB_HOST: mysql
+      REDIS_HOST: redis
     depends_on:
       - mysql
       - redis
