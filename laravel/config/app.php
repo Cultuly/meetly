@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'api_base' => env('API_BASE', 'https://api.meetly.ru'),
 ];

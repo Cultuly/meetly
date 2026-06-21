@@ -8,20 +8,38 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./laravel:/var/www/html
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/80"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     depends_on:
-      - laravel
-      - fastapi
+      laravel:
+        condition: service_healthy
+      fastapi:
+        condition: service_healthy
+    networks: [meetly_net]
 
   laravel:
-    build:
+    build: 
       context: ./laravel
       dockerfile: Dockerfile
     container_name: meetly_laravel
     volumes:
       - ./laravel:/var/www/html
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/9000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 180s
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [meetly_net]
 
   fastapi:
     build:
@@ -36,9 +54,18 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       DB_HOST: mysql
       REDIS_HOST: redis
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [meetly_net]
 
   mysql:
     image: mysql:8
@@ -49,16 +76,33 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     volumes:
       - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks: [meetly_net]
 
   redis:
     image: redis:alpine
     container_name: meetly_redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks: [meetly_net]
 
 volumes:
   mysql_data:
+
+networks:
+  meetly_net:
+    driver: bridge
