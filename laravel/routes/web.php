@@ -9,7 +9,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReactionController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('workspaces.index');
 });
 
 Route::get('/dashboard', function () {
