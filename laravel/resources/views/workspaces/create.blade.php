@@ -17,8 +17,8 @@
             <div>
                 <label class="block text-sm mb-1">Видимость</label>
                 <select name="visibility" class="w-full rounded-lg bg-gray-700 border-gray-600 text-gray-100">
-                    <option value="private" @selected(old('visibility') === 'private')>Приватное</option>
                     <option value="public"  @selected(old('visibility') === 'public')>Публичное</option>
+                    <option value="private" @selected(old('visibility') === 'private')>Приватное</option>
                 </select>
                 @error('visibility')
                     <p class="text-sm text-red-400 mt-1">{{ $message }}</p>

@@ -19,12 +19,11 @@
         <aside class="w-72 bg-gray-900 flex flex-col">
 
             {{-- Иконка --}}
-            <div class="h-14 flex items-center gap-2 px-4 border-b border-black/30">
-                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-semibold">
-                    M
-                </div>
-                <span class="font-semibold">Meetly</span>
-            </div>
+            <a href="{{ route('workspaces.index') }}"
+                class="h-14 flex items-center gap-2 px-4 border-b border-black/30 hover:bg-gray-800">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-semibold">M</div>
+                    <span class="font-semibold">Meetly</span>
+            </a>
 
             {{-- Список всех пространств --}}
             <nav class="flex-1 overflow-y-auto p-2 space-y-1">

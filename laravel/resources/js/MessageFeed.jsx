@@ -201,7 +201,7 @@ export default function MessageFeed({ channelId, userId, apiBase, canModerate })
                   setEditingId(m.id);
                   setEditDraft(m.body);
                 }}
-                className="opacity-0 group-hover:opacity-100 transition text-sm text-white hover:text-indigo-400"
+                className="group-hover:opacity-100 transition text-sm text-white hover:text-indigo-400"
               >
                 редактировать
               </button>
@@ -210,7 +210,7 @@ export default function MessageFeed({ channelId, userId, apiBase, canModerate })
             {canDelete && (
               <button
                 onClick={() => deleteMessage(m.id)}
-                className="opacity-0 group-hover:opacity-100 transition text-sm text-white hover:text-red-400"
+                className="group-hover:opacity-100 transition text-sm text-white hover:text-red-400"
               >
                 удалить
               </button>

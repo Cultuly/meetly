@@ -1,5 +1,11 @@
 <x-shell-layout>
     <div class="p-8">
+        
+        <a href="{{ route('workspaces.index') }}"
+            class="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-white mb-4">
+                ← Назад к пространствам
+        </a>
+
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-xl font-semibold">{{ $workspace->name }}</h1>

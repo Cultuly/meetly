@@ -2,6 +2,10 @@
     <div class="flex flex-col h-full">
         {{-- Шапка канала --}}
         <div class="h-14 px-6 flex items-center border-b border-black/30 shrink-0">
+            <a href="{{ route('workspaces.show', $channel->workspace) }}"
+                class="text-gray-400 hover:text-white mr-3" title="Назад в пространство">
+                    ← Назад в пространство
+            </a>
             <span class="text-gray-400 mr-1">#</span>
             <span class="font-semibold">{{ $channel->name }}</span>
         </div>

@@ -1,4 +1,4 @@
-# ================= Meetly =================
+# ================ Meetly ================
 ## Веб-приложение для командного общения в пространствах в реальном времени.
 
 **Аналоги: Slack / Discord / Пачка / Zulip**
@@ -59,7 +59,8 @@
 ---
 
 
-# ========================== ПОДГОТОВКА ==========================
+# ================ ПОДГОТОВКА ================
+
 ## Подготовка машины (разово)
 
 Проект работает на двух локальных доменах по HTTPS. Чтобы они резолвились и браузер доверял самоподписанному сертификату — три шага.
@@ -88,21 +89,20 @@ bash nginx/gen-certs.sh
 
 Скрипт создаёт `nginx/certs/meetly.crt` и `meetly.key` с SAN на оба домена.
 
-> Если `openssl` недоступен (голый Windows без WSL) — то же самое через Docker:
-> ```bash
-> docker run --rm -v "${PWD}/nginx/certs:/certs" alpine/openssl req -x509 -nodes \
->   -newkey rsa:2048 -keyout /certs/meetly.key -out /certs/meetly.crt -days 825 \
->   -subj "/CN=meetly.ru" -addext "subjectAltName=DNS:meetly.ru,DNS:api.meetly.ru"
-> ```
-
 ### 3. Добавить сертификат в доверенные
 
 ### Без них React не сможет ходить с `meetly.ru` на `api.meetly.ru` (браузер режет cross-origin запросы к недоверенному сертификату).
 
 **Windows** (PowerShell **от администратора**), затем **полностью перезапустить браузер**:
 
+### Вариант для WSL
 ```powershell
-Import-Certificate -FilePath ".\nginx\certs\meetly.crt" -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath "\путь до meetly.crt\nginx\certs\meetly.crt" -CertStoreLocation Cert:\LocalMachine\Root
+```
+
+Пример:
+```powershell
+Import-Certificate -FilePath "\\wsl.localhost\Ubuntu-24.04\home\cultuly\meetly" -CertStoreLocation Cert:\LocalMachine\Root
 ```
 
 **Linux:**
@@ -114,8 +114,9 @@ sudo update-ca-certificates
 
 **macOS:** открыть `meetly.crt` в Keychain Access → добавить в System → выставить «Always Trust».
 
+---
 
-# ========================== ЗАПУСК ==========================
+# ================ ЗАПУСК ================
 
 ```bash
 # 1. Клонировать
@@ -135,10 +136,11 @@ docker compose exec laravel php artisan migrate --seed
 https://meetly.ru
 ```
 
-> **Первый старт займёт пару минут** 
-При первом старте Laravel устанавливает зависимости и прогоняет фронтенд бандл (страница в это время может быть недоступна, подождите пока у laravel будет статус healthy)
+---
 
 **Данные для теста**:
 
 - Email: `alice@meetly.test` · Пароль: `password`
 - Email: `bob@meetly.test` · Пароль: `password`
+
+---
