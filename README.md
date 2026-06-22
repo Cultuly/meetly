@@ -23,8 +23,8 @@
                     │  (php-fpm)   │    │  (uvicorn)   │
                     │ SSR + ЗАПИСЬ │    │  REST + WS   │
                     └───┬──────┬───┘    └───┬──────┬───┘
-                 запись │      │ publish    │ чтение│ subscribe
-                        ▼      ▼            ▼       ▼
+                 запись │      │ publish    │чтение│ subscribe
+                        ▼      ▼            ▼      ▼
                    ┌────────┐ ┌───────────────┐ ┌────────┐
                    │ MySQL  │ │     Redis     │ │ MySQL  │
                    │(запись)│ │    Pub/Sub    │ │(чтение)│
@@ -97,10 +97,10 @@ bash nginx/gen-certs.sh
 
 ### Вариант для WSL
 ```powershell
-Import-Certificate -FilePath "\путь до meetly.crt\nginx\certs\meetly.crt" -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath "путь до meetly.crt\nginx\certs\meetly.crt" -CertStoreLocation Cert:\LocalMachine\Root
 ```
 
-Пример:
+Пример правильной команды:
 ```powershell
 Import-Certificate -FilePath "\\wsl.localhost\Ubuntu-24.04\home\cultuly\meetly" -CertStoreLocation Cert:\LocalMachine\Root
 ```
