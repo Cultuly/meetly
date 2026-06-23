@@ -102,7 +102,7 @@ Import-Certificate -FilePath "путь до директории meetly\nginx\ce
 
 Пример правильной команды:
 ```powershell
-Import-Certificate -FilePath ""\\wsl.localhost\Debian\home\cultuly\test\meetly\nginx\certs\meetly.crt"" -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath "\\wsl.localhost\Debian\home\cultuly\test\meetly\nginx\certs\meetly.crt" -CertStoreLocation Cert:\LocalMachine\Root
 ```
 
 **Linux:**
