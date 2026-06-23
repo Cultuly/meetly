@@ -97,12 +97,12 @@ bash nginx/gen-certs.sh
 
 ### Вариант для WSL
 ```powershell
-Import-Certificate -FilePath "путь до meetly.crt\nginx\certs\meetly.crt" -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath "путь до директории meetly\nginx\certs\meetly.crt" -CertStoreLocation Cert:\LocalMachine\Root
 ```
 
 Пример правильной команды:
 ```powershell
-Import-Certificate -FilePath "\\wsl.localhost\Ubuntu-24.04\home\cultuly\meetly" -CertStoreLocation Cert:\LocalMachine\Root
+Import-Certificate -FilePath ""\\wsl.localhost\Debian\home\cultuly\test\meetly\nginx\certs\meetly.crt"" -CertStoreLocation Cert:\LocalMachine\Root
 ```
 
 **Linux:**
